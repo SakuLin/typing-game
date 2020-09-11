@@ -57,15 +57,141 @@
                 clearInterval(id);
                 // console.log('Finish!');
                 isFinish = true;
-                pGameFinish(sec);
+                pGameFinish();
             }
         }, 1000);
     }
 
     function pGameFinish() {
-        result.textContent = 'Finish!';
+        // result.textContent = 'Finish!';
         counter.textContent = '';
         target.textContent = '';
+
+        const thisScore = typeCount * 50;
+        const thisDate = `${dt.getFullYear()}.${dt.getMonth()+1}.${dt.getDate()} ${('0'+dt.getHours()).slice(-2)}:${('0'+dt.getMinutes()).slice(-2)}:${('0'+dt.getSeconds()).slice(-2)}`;
+        console.log(thisDate);
+
+        let isLower = false;
+
+        let score1 = localStorage.getItem('score1');
+        let score2 = localStorage.getItem('score2');
+        let score3 = localStorage.getItem('score3');
+        let date1 = localStorage.getItem('date1');
+        let date2 = localStorage.getItem('date2');
+        let date3 = localStorage.getItem('date3');
+
+        if (score1 === null) { // はじめてゲームプレイした時
+            score1 = thisScore;
+            date1 = thisDate;
+        } else if (score2 === null) { // 2回目にゲームプレイした時
+            if (score1 <= thisScore) {
+                score2 = score1;
+                date2 = date1;
+                score1 = thisScore;
+                date1 = thisDate;
+            } else {
+                score2 = thisScore;
+                date2 = thisDate;
+            }
+        // } else if (score3 === null) { // 3回目にゲームプレイした時
+        //     if (score1 <= thisScore) {
+        //         score3 = score2;
+        //         date3 = date2;
+        //         score2 = score1;
+        //         date2 = date1;
+        //         score1 = thisScore;
+        //         date1 = thisDate;
+        //     } else if (score2 <= thisScore) {
+        //         score3 = score2;
+        //         date3 = date2;
+        //         score2 = thisScore;
+        //         date2 = thisDate;
+        //     } else {
+        //         score3 = thisScore;
+        //         date3 = thisDate;
+        //     }
+        } else { // 4回目以降のゲームプレイ時
+            if (score1 <= thisScore) {
+                score3 = score2;
+                date3 = date2;
+                score2 = score1;
+                date2 = date1;
+                score1 = thisScore;
+                date1 = thisDate;
+            } else if (score2 <= thisScore) {
+                score3 = score2;
+                date3 = date2;
+                score2 = thisScore;
+                date2 = thisDate;
+            } else if (score3 <= thisScore || score3 === null) {
+                score3 = thisScore;
+                date3 = thisDate;
+            } else {
+                isLower = true;
+            }
+        }
+        // ローカルストレージの上書き。変更無くても上書きすることになっているけど、今回はこれでおーけー
+        localStorage.setItem('score1', score1);
+        localStorage.setItem('score2', score2);
+        localStorage.setItem('score3', score3);
+        localStorage.setItem('date1', date1);
+        localStorage.setItem('date2', date2);
+        localStorage.setItem('date3', date3);
+        
+        if (isLower === true) {
+            result.innerHTML = `<table id="resultTable">
+                                    <tr>
+                                        <th></th>
+                                        <th>Score</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    <tr>
+                                        <td>1.</td>
+                                        <td>${score1}</td>
+                                        <td>${date1}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2.</td>
+                                        <td>${score2}</td>
+                                        <td>${date2}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3.</td>
+                                        <td>${score3}</td>
+                                        <td>${date3}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>${thisScore}</td>
+                                        <td>${thisDate}</td>
+                                    </tr>
+                                </table>`;
+            // result.innerHTML = 'hello';
+        } else {
+            result.innerHTML = `<table>
+                                    <tr>
+                                        <th></th>
+                                        <th>Score</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    <tr>
+                                        <td>1.</td>
+                                        <td>${score1}</td>
+                                        <td>${date1}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2.</td>
+                                        <td>${score2}</td>
+                                        <td>${date2}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3.</td>
+                                        <td>${score3}</td>
+                                        <td>${date3}</td>
+                                    </tr>
+                                </table>`;
+        }
+
     }
 
     let word;
@@ -89,6 +215,8 @@
         isPlaying = true;
         startTime = Date.now();
         dt = new Date();
+        console.log(startTime);
+        console.log(dt);
         setWord();
         myscore.textContent = 'Type 0  Score : 0';
         counter.textContent = `Timer: ${sec} sec`;
