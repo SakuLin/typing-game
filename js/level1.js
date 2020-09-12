@@ -87,6 +87,7 @@
     let loc = 0;
     let sec = 30; // 制限時間
     let typeCount = 50; // 回打つとクリア
+    let missTypeCount = 0;
     let tc = typeCount;
     let startTime;
     let dt;
@@ -113,6 +114,11 @@
 
     document.addEventListener('keydown', e => {
         if (e.key !== word[loc]) {
+            missTypeCount++;
+            if (isFinish === true) {
+                return;
+            }
+            myscore.textContent = `Type ${tc - typeCount} / ${tc} Miss ${missTypeCount} Score : ${(tc - typeCount) * 50 - missTypeCount * 20}`;
             return;
         }
         if (isFinish === true) {
@@ -125,7 +131,7 @@
         // 2: __d
         // 3: ___
         target.textContent = '_'.repeat(loc) + word.substring(loc);
-        myscore.textContent = `Type ${tc - typeCount} / ${tc} Score : ${(tc - typeCount) * 50}`;
+        myscore.textContent = `Type ${tc - typeCount} / ${tc} Miss ${missTypeCount} Score : ${(tc - typeCount) * 50 - missTypeCount * 20}`;
         if (loc === word.length) {
             // if (words.length === 0) {
             //     const elapsedTime = ((Date.now() - startTime)/ 1000).toFixed(2);

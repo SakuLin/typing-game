@@ -64,22 +64,18 @@ video {
     
 }
 #resultTable {
-    /* width: 150px;
-    height: 50px; */
     font-size: 40px;
     letter-spacing: .1em;
-    /* width: 100%; */
     color: #fff;
+
     position: absolute;
-    /* text-align: center; */
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    /* margin: auto; */
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    
     z-index: 5;
-    /* margin-left: auto;
-    margin-right: auto; */
 }
 #counter {
     font-size: 30px;

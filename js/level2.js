@@ -67,12 +67,13 @@
         counter.textContent = '';
         target.textContent = '';
 
-        const thisScore = typeCount * 50;
+        const thisScore = typeCount * 50 - missTypeCount * 20;
         const thisDate = `${dt.getFullYear()}.${dt.getMonth()+1}.${dt.getDate()} ${('0'+dt.getHours()).slice(-2)}:${('0'+dt.getMinutes()).slice(-2)}:${('0'+dt.getSeconds()).slice(-2)}`;
         console.log(thisDate);
 
         let isLower = false;
 
+        // ローカルストレージの値を拾ってくる
         let score1 = localStorage.getItem('score1');
         let score2 = localStorage.getItem('score2');
         let score3 = localStorage.getItem('score3');
@@ -80,11 +81,14 @@
         let date2 = localStorage.getItem('date2');
         let date3 = localStorage.getItem('date3');
 
-        if (score1 === null) { // はじめてゲームプレイした時
+        // 値の更新
+        if (score1 == undefined) { // はじめてゲームプレイした時
             score1 = thisScore;
             date1 = thisDate;
-        } else if (score2 === null) { // 2回目にゲームプレイした時
-            if (score1 <= thisScore) {
+            console.log(score1);
+            console.log(date1);
+        } else if (score2 == undefined) { // 2回目にゲームプレイした時
+            if (Number(score1) <= thisScore) {
                 score2 = score1;
                 date2 = date1;
                 score1 = thisScore;
@@ -93,37 +97,20 @@
                 score2 = thisScore;
                 date2 = thisDate;
             }
-        // } else if (score3 === null) { // 3回目にゲームプレイした時
-        //     if (score1 <= thisScore) {
-        //         score3 = score2;
-        //         date3 = date2;
-        //         score2 = score1;
-        //         date2 = date1;
-        //         score1 = thisScore;
-        //         date1 = thisDate;
-        //     } else if (score2 <= thisScore) {
-        //         score3 = score2;
-        //         date3 = date2;
-        //         score2 = thisScore;
-        //         date2 = thisDate;
-        //     } else {
-        //         score3 = thisScore;
-        //         date3 = thisDate;
-        //     }
-        } else { // 4回目以降のゲームプレイ時
-            if (score1 <= thisScore) {
+        } else { // 3回目以降のゲームプレイ時
+            if (Number(score1) <= thisScore) {
                 score3 = score2;
                 date3 = date2;
                 score2 = score1;
                 date2 = date1;
                 score1 = thisScore;
                 date1 = thisDate;
-            } else if (score2 <= thisScore) {
+            } else if (Number(score2) <= thisScore) {
                 score3 = score2;
                 date3 = date2;
                 score2 = thisScore;
                 date2 = thisDate;
-            } else if (score3 <= thisScore || score3 === null) {
+            } else if (Number(score3) <= thisScore || score3 == undefined) {
                 score3 = thisScore;
                 date3 = thisDate;
             } else {
@@ -138,6 +125,12 @@
         localStorage.setItem('date2', date2);
         localStorage.setItem('date3', date3);
         
+        console.log(score1);
+        console.log(score2);
+        console.log(score3);
+        console.log(date1);
+        console.log(date2);
+        console.log(date3);
         if (isLower === true) {
             result.innerHTML = `<table id="resultTable">
                                     <tr>
@@ -162,13 +155,18 @@
                                     </tr>
                                     <tr>
                                         <td></td>
+                                        <td>:</td>
+                                        <td>:</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
                                         <td>${thisScore}</td>
                                         <td>${thisDate}</td>
                                     </tr>
                                 </table>`;
             // result.innerHTML = 'hello';
         } else {
-            result.innerHTML = `<table>
+            result.innerHTML = `<table id="resultTable">
                                     <tr>
                                         <th></th>
                                         <th>Score</th>
@@ -198,6 +196,7 @@
     let loc = 0;
     let sec = 30; // 制限時間
     let typeCount = 0; // カウンター
+    let missTypeCount = 0;
     let startTime;
     let dt;
     let isPlaying = false; // クリックの管理
@@ -225,6 +224,11 @@
 
     document.addEventListener('keydown', e => {
         if (e.key !== word[loc]) {
+            missTypeCount++;
+            if (isFinish === true) {
+                return;
+            }
+            myscore.textContent = `Type ${typeCount}  Miss ${missTypeCount} Score : ${typeCount * 50 - missTypeCount * 20}`;
             return;
         }
         if (isFinish === true) {
@@ -237,7 +241,7 @@
         // 2: __d
         // 3: ___
         target.textContent = '_'.repeat(loc) + word.substring(loc);
-        myscore.textContent = `Type ${typeCount}  Score : ${typeCount * 50}`;
+        myscore.textContent = `Type ${typeCount}  Miss ${missTypeCount} Score : ${typeCount * 50 - missTypeCount * 20}`;
         if (loc === word.length) {
             setWord();
         }
