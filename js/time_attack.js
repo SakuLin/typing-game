@@ -44,7 +44,9 @@
 
     function timecount() {
         // console.log('Start: ', dt);
-        let endDt = new Date(dt.getTime() + sec * 1000);
+        startTime = Date.now();
+        let endDt = startTime + sec * 1000;
+        // let endDt = new Date(dt.getTime() + sec * 1000);
         // console.log('End: ', endDt);
 
         let count = sec;
@@ -52,8 +54,9 @@
             count--;
             // console.log(count);
             counter.textContent = `Timer: ${count} sec`;
-            dt = new Date();
-            if (dt.getTime() >= endDt.getTime()){
+
+            // dt = new Date();
+            if (Date.now() >= endDt) {
                 clearInterval(id);
                 // console.log('Finish!');
                 isFinish = true;
@@ -90,7 +93,7 @@
     let missTypeCount = 0;
     let tc = typeCount;
     let startTime;
-    let dt;
+    // let dt;
     let isPlaying = false; // クリックの管理
     let isFinish = false;  // ゲーム終了の判定
 
@@ -105,7 +108,7 @@
         }
         isPlaying = true;
         startTime = Date.now();
-        dt = new Date();
+        // dt = new Date();
         setWord();
         myscore.textContent = `Type 0 / ${tc} Score : 0`;
         counter.textContent = `Timer: ${sec} sec`;
